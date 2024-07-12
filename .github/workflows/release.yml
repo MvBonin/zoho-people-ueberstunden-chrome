@@ -1,0 +1,59 @@
+name: Release Chrome Extension
+
+on:
+  push:
+    tags:
+      - "v*.*.*" # This triggers the workflow on version tags
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: 16
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build the extension
+        run: npm run build # Customize this step to build your extension
+
+      - name: Pack extension directory
+        uses: cardinalby/webext-buildtools-pack-extension-dir-action@v1
+        id: packExtensionDir
+        with:
+          extensionDir: "path/to/extension"
+          zipFilePath: "build/extension.zip"
+
+      - name: Build signed CRX file
+        uses: cardinalby/webext-buildtools-chrome-crx-action@v1
+        id: buildCrx
+        with:
+          zipFilePath: "build/extension.zip"
+          crxFilePath: "build/extension.crx"
+          privateKey: ${{ secrets.PRIVATE_KEY }}
+
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+          draft: false
+          prerelease: false
+
+      - name: Upload release asset
+        uses: actions/upload-release-asset@v1
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: build/extension.crx
+          asset_name: extension.crx
+          asset_content_type: application/octet-stream
