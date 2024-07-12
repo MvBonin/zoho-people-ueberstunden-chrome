@@ -16,18 +16,11 @@ jobs:
       # Remove Node.js setup and npm install steps
       # If you have other build steps specific to your extension, you can add them here
 
-      - name: Pack extension directory
-        uses: cardinalby/webext-buildtools-pack-extension-dir-action@v1
-        id: packExtensionDir
-        with:
-          extensionDir: "." # Adjust this path to your extension directory if needed
-          zipFilePath: "build/extension.zip"
-
       - name: Build signed CRX file
         uses: cardinalby/webext-buildtools-chrome-crx-action@v1
         id: buildCrx
         with:
-          zipFilePath: "build/extension.zip"
+          extensionDir: "." # Adjust this path to your extension directory if needed
           crxFilePath: "build/extension.crx"
           privateKey: ${{ secrets.PRIVATE_KEY }}
 
