@@ -1,17 +1,17 @@
 {
   "manifest_version": 3,
   "name": "Zoho People Überstunden Berechnung",
-  "version": "0.11",
+  "version": "0.12",
   "description": "Berechnet die tatsächlichen Überstunden in Zoho People",
   "author": "Markwart v. Bonin",
   "permissions": ["activeTab", "webNavigation"],
   "content_scripts": [
     {
       "matches": [
-        "https://people.zoho.com/corekites/zp*",
-        "https://people.ridecore.com/corekites/zp*",
-        "https://people.zoho.com/corekites/zp#reports/*/attendance/user",
-        "https://people.ridecore.com/corekites/zp#reports/*/attendance/user"
+        "https://people.zoho.com/*/zp*",
+        "https://people.ridecore.com/*/zp*",
+        "https://people.zoho.com/*/zp#reports/*/attendance/user",
+        "https://people.ridecore.com/*/zp#reports/*/attendance/user"
       ],
       "js": ["content.js"]
     }
