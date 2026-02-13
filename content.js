@@ -32,11 +32,14 @@
 
     if (overtimeElement && deviationElement) {
       console.log("Overtime and Deviation elements found");
-      let overtime = overtimeElement.innerText.replace(" Std", "");
-      let deviation = deviationElement.innerText.replace(" Std", "");
+      let overtime = overtimeElement.innerText.replace(" Std", "").replace(" Hr", "");
+      let deviation = deviationElement.innerText.replace(" Std", "").replace(" Hr", "");
 
       let actualOvertimeMinutes = calculateActualOvertime(overtime, deviation);
       let actualOvertime = minutesToTime(actualOvertimeMinutes);
+      let eightHours = 8 * 60;
+      let actualHoursMinutes = eightHours - actualOvertimeMinutes;
+      let actualHours = minutesToTime(actualHoursMinutes);
       let label =
         actualOvertimeMinutes < 0 ? "Unterstunden" : "Tatsächliche Überstunden";
       let borderColor = actualOvertimeMinutes < 0 ? "#96000a" : "#00960d";
@@ -46,6 +49,11 @@
       if (existingElement) {
         existingElement.innerText = `${actualOvertime} Std`;
         existingElement.parentNode.style.borderColor = borderColor;
+        let existingElement2 = document.getElementById("ZPAtt_URep_ActualHrs");
+        if (existingElement2) {
+          existingElement2.innerText = `${actualHours} Std`;
+          existingElement2.parentNode.style.borderColor = borderColor2;
+        }
       } else {
         // Erstelle ein neues Element für die tatsächlichen Überstunden
         let actualOvertimeElement = document.createElement("div");
@@ -53,6 +61,22 @@
         actualOvertimeElement.style.borderColor = borderColor;
         actualOvertimeElement.innerHTML = `<span>${label}</span> <div class="Avadat" id="ZPAtt_URep_ActualOTHrs">${actualOvertime} Std</div>`;
 
+        
+
+        // Erstelle ein neues Element für die tatsächlichen Überstunden
+        let label2 = "An (eigtl. 8h-)Tag abarbeiten";
+        
+        let borderColor2 = "#c44db2";
+        let actualHoursElement = document.createElement("div");
+        actualHoursElement.className = "Dtyps actual-overtime-border";
+        actualHoursElement.style.borderColor = borderColor2;
+        actualHoursElement.innerHTML = `<span>${label2}</span> <div class="Avadat" id="ZPAtt_URep_ActualHrs">${actualHours} Std</div>`;
+
+        // Füge das neue Element unter den bestehenden ein
+        deviationElement.parentNode.insertAdjacentElement(
+          "afterend",
+          actualHoursElement
+        );
         // Füge das neue Element unter den bestehenden ein
         deviationElement.parentNode.insertAdjacentElement(
           "afterend",
